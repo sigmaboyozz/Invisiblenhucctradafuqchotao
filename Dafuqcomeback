@@ -1241,3 +1241,57 @@ RunService.Heartbeat:Connect(function()
     FreezeFolder(BossFolder)
     FreezeFolder(MobFolder)
 end)
+local AutoMecha = false
+
+Tab7:AddToggle({
+	Name = "Auto Mecha Easy-Hard",
+	Default = false,
+	Callback = function(Value)
+		AutoMecha = Value
+
+		if Value then
+			task.spawn(function()
+				local Players = game:GetService("Players")
+				local TweenService = game:GetService("TweenService")
+
+				local LocalPlayer = Players.LocalPlayer
+
+				local Radius = 10
+				local Height = 3
+				local Speed = 2
+
+				while AutoMecha do
+					local Character = LocalPlayer.Character
+					local HRP = Character and Character:FindFirstChild("HumanoidRootPart")
+
+					local Boss = workspace["World Mobs"]["Event Mobs"]:FindFirstChild("Mecha Soldier")
+					local BossRoot = Boss and Boss:FindFirstChild("HumanoidRootPart")
+					local Humanoid = Boss and Boss:FindFirstChild("Humanoid")
+
+					if HRP and BossRoot and Humanoid and Humanoid.Health > 0 then
+						local angle = tick() * Speed
+
+						local targetPos = BossRoot.Position + Vector3.new(
+							math.cos(angle) * Radius,
+							Height,
+							math.sin(angle) * Radius
+						)
+
+						local tween = TweenService:Create(
+							HRP,
+							TweenInfo.new(0.1, Enum.EasingStyle.Linear),
+							{
+								CFrame = CFrame.new(targetPos, BossRoot.Position)
+							}
+						)
+
+						tween:Play()
+						tween.Completed:Wait()
+					else
+						task.wait(0.1)
+					end
+				end
+			end)
+		end
+	end
+})
