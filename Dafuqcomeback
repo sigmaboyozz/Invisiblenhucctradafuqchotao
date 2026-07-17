@@ -1015,7 +1015,7 @@ local TweenService = game:GetService("TweenService")
 
 local LocalPlayer = Players.LocalPlayer
 
-local BossFolder = workspace["World Mobs"]:WaitForChild("Boss Mobs")
+local BossFolder = workspace["World Mobs"]:WaitForChild("Event Mobs")
 local MobFolder = workspace["World Mobs"]:WaitForChild("Mobs")
 
 local Radius = 1000
