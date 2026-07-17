@@ -1,0 +1,946 @@
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/jensonhirst/Orion/main/source"))()
+
+local Window = OrionLib:MakeWindow({
+    Name = "Dragon Blox fully functional",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "AutoCycleConfig"
+})
+
+local Tab = Window:MakeTab({
+    Name = "Farm👽",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab1 = Window:MakeTab({
+    Name = "Quest📜",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab2 = Window:MakeTab({
+    Name = "Combat",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab3 = Window:MakeTab({
+    Name = "Afk+farm",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab4 = Window:MakeTab({
+    Name = "Nuke server 🛀",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab5 = Window:MakeTab({
+    Name = "Check+fake",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab6 = Window:MakeTab({
+    Name = "Localplayer⭐",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab7 = Window:MakeTab({
+    Name = "Server control👀",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab8 = Window:MakeTab({
+    Name = "Trading plaza",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab9 = Window:MakeTab({
+    Name = "Marco+Antiban",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab10 = Window:MakeTab({
+    Name = "Shop",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab11 = Window:MakeTab({
+    Name = "Band wrongful",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab12 = Window:MakeTab({
+    Name = "Event+Quest📜",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab13 = Window:MakeTab({
+    Name = "farming without a farm 70%",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab14 = Window:MakeTab({
+    Name = "Menu color",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab15 = Window:MakeTab({
+    Name = "Discord+Youtube",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab16 = Window:MakeTab({
+    Name = "Cooldown skill?",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab17 = Window:MakeTab({
+    Name = "Auto Combo+Combat⚔️",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab18 = Window:MakeTab({
+    Name = "Auto Nuke logs Staff",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab19 = Window:MakeTab({
+    Name = "Report Bug",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab20 = Window:MakeTab({
+    Name = "Webhook",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab21 = Window:MakeTab({
+    Name = "Gamepass",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Tab22 = Window:MakeTab({
+    Name = "Cre Owner🌀",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local TimeLabel = Tab:AddLabel("Time use Scrip: 00:00:00")
+
+task.spawn(function()
+	local Seconds = 0
+
+	while true do
+		task.wait(1)
+
+		Seconds += 1
+
+		local Hours = math.floor(Seconds / 3600)
+		local Minutes = math.floor((Seconds % 3600) / 60)
+		local Sec = Seconds % 60
+
+		TimeLabel:Set(
+			string.format(
+				"Thời gian chạy script: %02d:%02d:%02d",
+				Hours,
+				Minutes,
+				Sec
+			)
+		)
+	end
+end)
+Tab:AddLabel("Main World 0-50rb")
+local SelectedTool = 2
+local AutoEquipTools = false
+
+local Dropdown = Tab:AddDropdown({
+	Name = "Auto equiptools Weaponslot",
+	Default = "2",
+	Options = {"1","2","3","4","5","6"},
+	Callback = function(Value)
+		SelectedTool = tonumber(Value)
+	end
+})
+
+Tab:AddToggle({
+	Name = "Auto EquipTools",
+	Default = false,
+	Callback = function(Value)
+		AutoEquipTools = Value
+
+		if Value then
+			task.spawn(function()
+				while AutoEquipTools do
+					local args = {
+						SelectedTool
+					}
+
+					game:GetService("ReplicatedStorage")
+						:WaitForChild("Packages")
+						:WaitForChild("_Index")
+						:WaitForChild("sleitnick_knit@1.4.7")
+						:WaitForChild("knit")
+						:WaitForChild("Services")
+						:WaitForChild("ToolService")
+						:WaitForChild("RE")
+						:WaitForChild("UpdatePlayerToolbarSelection")
+						:FireServer(unpack(args))
+
+					task.wait(0.1)
+				end
+			end)
+		end
+	end
+})
+local isRunning = false
+local cycleConnection = nil
+
+-- ================== CFRAMES ==================
+local pos1 = CFrame.new(6693.84277, 601.975098, -3246.90747, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+local pos2 = CFrame.new(8388.96289, 658.422302, -3235.83765, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+local pos3 = CFrame.new(7614.31104, 661.975098, -3296.76538, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+
+local player = game.Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
+
+local character = player.Character or player.CharacterAdded:Wait()
+local root = character:WaitForChild("HumanoidRootPart")
+
+-- ================== RE-CONNECT KHI CHẾT ==================
+local function setupCharacter()
+    character = player.Character or player.CharacterAdded:Wait()
+    root = character:WaitForChild("HumanoidRootPart")
+end
+
+player.CharacterAdded:Connect(setupCharacter)
+
+-- ================== FUNCTIONS ==================
+local function getAllMobs()
+    local mobs = {}
+    local wm = workspace:FindFirstChild("World Mobs")
+    if wm then
+        for _, folder in ipairs({wm:FindFirstChild("Mobs"), wm:FindFirstChild("Boss Mobs")}) do
+            if folder then
+                for _, mob in ipairs(folder:GetChildren()) do
+                    if mob:FindFirstChild("HumanoidRootPart") or mob:FindFirstChild("Head") then
+                        table.insert(mobs, mob)
+                    end
+                end
+            end
+        end
+    end
+    return mobs
+end
+
+local function lockNearestMob()
+    local nearest, minDist = nil, 500
+    for _, mob in ipairs(getAllMobs()) do
+        local mRoot = mob:FindFirstChild("HumanoidRootPart") or mob:FindFirstChild("Head")
+        if mRoot then
+            local dist = (root.Position - mRoot.Position).Magnitude
+            if dist < minDist then
+                minDist = dist
+                nearest = mob
+            end
+        end
+    end
+    if nearest then
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Packages"):WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7")
+            :WaitForChild("knit"):WaitForChild("Services"):WaitForChild("SkillManager")
+            :WaitForChild("RE"):WaitForChild("LockedOnChanged"):FireServer(nearest)
+    end
+end
+
+local function fireSkill()
+    local args = {{
+        Camera = CFrame.new(74.2727279663086, 251.0009002685547, -28.747745513916016, -0.9511321783065796, -0.044049736112356186, 0.3056260347366333, 0, 0.9897724390029907, 0.14265543222427368, -0.308784157037735, 0.13568417727947235, -0.9414043426513672),
+        SkillId = "101",
+        Began = true,
+        CFrame = CFrame.new(70.45240020751953, 247.81771850585938, -16.98019027709961, 1, 0, 0, 0, 1, 0, 0, 0, 1),
+        ["Typ\208\181"] = 1,
+        Aim = Vector3.new(70.45240020751953, 247.81771850585938, -66.98019409179688)
+    }}
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SkillRemote"):FireServer(unpack(args))
+end
+
+local function tweenTo(targetCFrame, speed)
+    if not root or not root.Parent then return end
+    local distance = (root.Position - targetCFrame.Position).Magnitude
+    local tweenInfo = TweenInfo.new(distance / speed, Enum.EasingStyle.Linear)
+    local tween = TweenService:Create(root, tweenInfo, {CFrame = targetCFrame})
+    tween:Play()
+    tween.Completed:Wait()
+end
+
+local function doOneCycle()
+    if not isRunning then return end
+    if not root or not root.Parent then return end
+
+    tweenTo(pos1, 150)   -- Teleport nhanh bằng tween
+    wait(0.3)
+
+    tweenTo(pos2, 120)   -- Di chuyển chậm hơn một chút
+    wait(0.3)
+
+    tweenTo(pos3, 150)
+    wait(0.6)
+end
+
+-- ================== TOGGLE ==================
+Tab:AddToggle({
+    Name = "Auto Farm MainWorld Requires 200k power.",
+    Default = false,
+    Callback = function(value)
+        isRunning = value
+
+        if value then  
+            OrionLib:MakeNotification({  
+                Name = "Auto Cycle",  
+                Content = "Đã BẬT - Chu kỳ đang chạy",  
+                Image = "rbxassetid://4483345998",  
+                Time = 3  
+            })  
+            
+            spawn(function()  
+                while isRunning do  
+                    doOneCycle()
+                    wait(14)  
+                end  
+            end)  
+        else  
+            OrionLib:MakeNotification({  
+                Name = "Auto Cycle",  
+                Content = "Đã TẮT",  
+                Image = "rbxassetid://4483345998",  
+                Time = 3  
+            })  
+        end  
+    end
+})
+
+-- Auto Lock + Skill Spam
+spawn(function()
+    while true do
+        if isRunning and root and root.Parent then
+            lockNearestMob()
+            fireSkill()
+        end
+        wait(0.12)
+    end
+end)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+local hum = character:WaitForChild("Humanoid")
+
+local lockPos = hrp.CFrame
+local connection = nil
+local autoSkillConnection = nil
+
+-- Skill Remote Args
+local skillArgs = {
+    {
+        Camera = CFrame.new(74.2727279663086, 251.0009002685547, -28.747745513916016, -0.9511321783065796, -0.044049736112356186, 0.3056260347366333, 0, 0.9897724390029907, 0.14265543222427368, -0.308784157037735, 0.13568417727947235, -0.9414043426513672),
+        SkillId = "1",
+        Began = true,
+        CFrame = CFrame.new(70.45240020751953, 247.81771850585938, -16.98019027709961, 1, 0, 0, 0, 1, 0, 0, 0, 1),
+        ["Typ\208\181"] = 1,
+        Aim = Vector3.new(70.45240020751953, 247.81771850585938, -66.98019409179688)
+    }
+}
+
+
+Tab:AddToggle({
+    Name = "Duo farm",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            -- Bật Position Lock (không di chuyển được nhưng vẫn cố đi tới)
+            lockPos = hrp.CFrame
+            connection = RunService.RenderStepped:Connect(function()
+                if hrp and hum then
+                    hum:Move(Vector3.new(0, 0, -1), true)
+                    hrp.CFrame = lockPos
+                end
+            end)
+
+            -- Bật Auto Skill (bắn liên tục)
+            autoSkillConnection = RunService.Heartbeat:Connect(function()
+                if ReplicatedStorage:FindFirstChild("Remotes") and ReplicatedStorage.Remotes:FindFirstChild("SkillRemote") then
+                    ReplicatedStorage.Remotes.SkillRemote:FireServer(unpack(skillArgs))
+                end
+            end)
+
+            OrionLib:MakeNotification({
+                Name = "Auto Skidbri",
+                Content = "Đã bật Auto Skidbri!",
+                Image = "rbxassetid://4483362458",
+                Time = 3
+            })
+        else
+            -- Tắt tất cả
+            if connection then
+                connection:Disconnect()
+                connection = nil
+            end
+            if autoSkillConnection then
+                autoSkillConnection:Disconnect()
+                autoSkillConnection = nil
+            end
+
+            OrionLib:MakeNotification({
+                Name = "Auto Skidbri",
+                Content = "Đã tắt Auto Skidbri!",
+                Image = "rbxassetid://4483362458",
+                Time = 3
+            })
+        end
+    end
+})
+
+-- Character Respawn Handler
+player.CharacterAdded:Connect(function(newChar)
+    character = newChar
+    hrp = newChar:WaitForChild("HumanoidRootPart")
+    hum = newChar:WaitForChild("Humanoid")
+end)
+
+OrionLib:Init()
+local TargetRebirth = 0
+local AutoRebirthTarget = false
+
+Tab:AddTextbox({
+	Name = "Rebirth Target",
+	Default = "",
+	TextDisappear = false,
+	Callback = function(Value)
+		TargetRebirth = tonumber(Value) or 0
+	end
+})
+
+Tab:AddToggle({
+	Name = "Auto rebirth Target",
+	Default = false,
+	Callback = function(Value)
+		AutoRebirthTarget = Value
+
+		if AutoRebirthTarget then
+			task.spawn(function()
+				while AutoRebirthTarget do
+					pcall(function()
+						local CurrentRebirth = game:GetService("Players").LocalPlayer.Stats.Rebirth.Value
+
+						-- Đạt target thì dừng
+						if TargetRebirth > 0 and CurrentRebirth >= TargetRebirth then
+							AutoRebirthTarget = false
+							return
+						end
+
+						local args = {
+							[1] = true
+						}
+
+						game:GetService("ReplicatedStorage")
+							:WaitForChild("Packages")
+							:WaitForChild("_Index")
+							:WaitForChild("sleitnick_knit@1.4.7")
+							:WaitForChild("knit")
+							:WaitForChild("Services")
+							:WaitForChild("PlayerLevelService")
+							:WaitForChild("RF")
+							:WaitForChild("RequestRebirth")
+							:InvokeServer(unpack(args))
+					end)
+
+					task.wait(0.2)
+				end
+			end)
+		end
+	end
+})
+local AutoRebirth = false
+
+Tab:AddToggle({
+	Name = "Auto rebirth",
+	Default = false,
+	Callback = function(Value)
+		AutoRebirth = Value
+
+		if AutoRebirth then
+			task.spawn(function()
+				while AutoRebirth do
+					pcall(function()
+						local args = {
+							[1] = true
+						}
+
+						game:GetService("ReplicatedStorage")
+							:WaitForChild("Packages")
+							:WaitForChild("_Index")
+							:WaitForChild("sleitnick_knit@1.4.7")
+							:WaitForChild("knit")
+							:WaitForChild("Services")
+							:WaitForChild("PlayerLevelService")
+							:WaitForChild("RF")
+							:WaitForChild("RequestRebirth")
+							:InvokeServer(unpack(args))
+					end)
+
+					task.wait(0.2)
+				end
+			end)
+		end
+	end
+})
+local chargeArgs = {{
+    Camera = CFrame.new(640.81549,595.6267,-148.80317),
+    SkillId = "2",
+    Began = true,
+    CFrame = CFrame.new(630.13879,587.79492,-149.98782),
+    ["Typ\208\181"] = 1,
+    Aim = vector.create(580.19,587.79,-152.32)
+}}
+
+local releaseArgs = {{
+    Camera = CFrame.new(640.81549,595.6267,-148.80317),
+    SkillId = "2",
+    Began = false,
+    CFrame = CFrame.new(630.13879,587.79492,-149.98782),
+    ["Typ\208\181"] = 1,
+    Aim = vector.create(633.96,584.97,-140.55)
+}}
+
+local AutoEnergyEnabled = false
+local isCharging = false
+
+Tab6:AddToggle({
+    Name = "Auto Năng Lượng ⚡",
+    Default = true,
+    Callback = function(Value)
+        AutoEnergyEnabled = Value
+        isCharging = false
+
+        task.spawn(function()
+            while AutoEnergyEnabled do
+                local player = game.Players.LocalPlayer
+                local char = player.Character
+
+                if not char then task.wait(1) continue end
+
+                local status = char:FindFirstChild("Status")
+                local energy = status and status:FindFirstChild("CurrentEnergy")
+
+                if energy then
+                    local current = energy.Value
+
+                    if current <= 400 and not isCharging then
+                        isCharging = true
+
+                        game.ReplicatedStorage.Remotes.SkillRemote:FireServer(unpack(chargeArgs))
+
+                        local last = current
+                        local noUp = 0
+
+                        for i = 1,8 do
+                            task.wait(0.5)
+                            if not AutoEnergyEnabled then break end
+
+                            local now = energy.Value
+                            if now <= last + 20 then
+                                noUp += 1
+                                if noUp >= 4 then
+                                    break
+                                end
+                            else
+                                noUp = 0
+                                last = now
+                            end
+                        end
+
+                        game.ReplicatedStorage.Remotes.SkillRemote:FireServer(unpack(releaseArgs))
+                        isCharging = false
+                    end
+                end
+
+                task.wait(0.8)
+            end
+        end)
+    end
+})
+local AutoClaim = false
+
+Tab1:AddToggle({
+	Name = "Auto Claim Quest",
+	Default = false,
+	Callback = function(Value)
+		AutoClaim = Value
+		
+		if AutoClaim then
+			spawn(function()
+				while AutoClaim do
+					-- Auto Accept Quest
+					local args = {
+						[1] = {
+							["isTier"] = true,
+							["Description"] = "Accept Quest?\n[Defeat Black Karrot.]",
+							["Index"] = 1,
+							["LeftButton"] = "Accept",
+							["Timer"] = 10,
+							["Prompt"] = "AcceptBoardQuest",
+							["RightButton"] = "Return",
+							["BoardName"] = "BoardQuest"
+						},
+						[2] = "Accept"
+					}
+
+					local success, err = pcall(function()
+						game:GetService("ReplicatedStorage"):WaitForChild("Packages")
+							:WaitForChild("_Index"):WaitForChild("sleitnick_knit@1.4.7")
+							:WaitForChild("knit"):WaitForChild("Services")
+							:WaitForChild("PromptService"):WaitForChild("RE")
+							:WaitForChild("Prompt"):FireServer(unpack(args))
+					end)
+					
+					if not success then
+						-- Có thể thêm log nếu cần
+					end
+					
+					wait(1) -- Điều chỉnh tốc độ nếu cần
+				end
+			end)
+		end
+	end
+})
+
+OrionLib:Init()
+local Section = Tab1:AddSection({
+    Name = "Auto Refresh Quest"
+})
+
+_G.AutoRefresh = false
+local refreshInterval = 10  -- thay đổi số giây nếu muốn
+
+local function fireRefresh()
+    local args = {
+        [1] = {
+            ["BoardName"] = "BoardQuest",
+            ["LeftButton"] = "Refresh",
+            ["Timer"] = refreshInterval,
+            ["Prompt"] = "RefreshBoardQuest",
+            ["RightButton"] = "Return",
+            ["Description"] = "Refresh Quest List?"
+        },
+        [2] = "Refresh"
+    }
+    
+    game:GetService("ReplicatedStorage")
+        :WaitForChild("Packages")
+        :WaitForChild("_Index")
+        :WaitForChild("sleitnick_knit@1.4.7")
+        :WaitForChild("knit")
+        :WaitForChild("Services")
+        :WaitForChild("PromptService")
+        :WaitForChild("RE")
+        :WaitForChild("Prompt"):FireServer(unpack(args))
+end
+
+-- Toggle
+Tab1:AddToggle({
+    Name = "Auto Refresh Quest",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoRefresh = Value
+        
+        if Value then
+            OrionLib:MakeNotification({
+                Name = "Auto Refresh",
+                Content = "Đã BẬT Auto Refresh Quest!",
+                Image = "rbxassetid://4483345998",
+                Time = 3
+            })
+            
+            spawn(function()
+                while _G.AutoRefresh do
+                    fireRefresh()
+                    wait(refreshInterval)
+                end
+            end)
+        else
+            OrionLib:MakeNotification({
+                Name = "Auto Refresh",
+                Content = "Đã TẮT Auto Refresh Quest!",
+                Image = "rbxassetid://4483345998",
+                Time = 3
+            })
+        end
+    end    
+})
+
+-- Nút Refresh thủ công
+Tab1:AddButton({
+    Name = "Refresh Quest Remote",
+    Callback = function()
+        fireRefresh()
+        OrionLib:MakeNotification({
+            Name = "Success",
+            Content = "Đã gửi lệnh Refresh Quest!",
+            Image = "rbxassetid://4483345998",
+            Time = 2
+        })
+    end    
+})
+Tab10:AddButton({
+    Name = "Buy Glasses 100 Sliver",
+    Callback = function()
+        local args = {
+            [1] = 33,
+            [2] = "MainWorld",
+            [3] = 1
+        }
+
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Packages")
+            :WaitForChild("_Index")
+            :WaitForChild("sleitnick_knit@1.4.7")
+            :WaitForChild("knit")
+            :WaitForChild("Services")
+            :WaitForChild("NPCShopService")
+            :WaitForChild("RE")
+            :WaitForChild("BuyItem")
+            :FireServer(unpack(args))
+    end
+})
+local AutoRebirth = false
+
+Tab5:AddToggle({
+	Name = "Auto rebirth [Real]",
+	Default = false,
+	Callback = function(Value)
+		AutoRebirth = Value
+
+		task.spawn(function()
+			while AutoRebirth do
+				local gp = game:GetService("Players").LocalPlayer.Stats.GamePasses:FindFirstChild("Auto Rebirth")
+				if gp then
+					gp.Value = true
+				end
+				task.wait(0.2)
+			end
+
+			local gp = game:GetService("Players").LocalPlayer.Stats.GamePasses:FindFirstChild("Auto Rebirth")
+			if gp then
+				gp.Value = false
+			end
+		end)
+	end
+})
+local AutoVIP = false
+
+Tab5:AddToggle({
+	Name = "Get Vip [Not real]",
+	Default = false,
+	Callback = function(Value)
+		AutoVIP = Value
+
+		task.spawn(function()
+			while AutoVIP do
+				local vip = game:GetService("Players").LocalPlayer.Stats.GamePasses:FindFirstChild("VIP")
+				if vip then
+					vip.Value = true
+				end
+				task.wait(0.2)
+			end
+
+			local vip = game:GetService("Players").LocalPlayer.Stats.GamePasses:FindFirstChild("VIP")
+			if vip then
+				vip.Value = false
+			end
+		end)
+	end
+})
+local AutoLuck = false
+
+Tab5:AddToggle({
+	Name = "2x Luck [cannot be determined]",
+	Default = false,
+	Callback = function(Value)
+		AutoLuck = Value
+
+		task.spawn(function()
+			while AutoLuck do
+				local luck = game:GetService("Players").LocalPlayer.Stats.GamePasses:FindFirstChild("2x Luck")
+				if luck then
+					luck.Value = true
+				end
+				task.wait(0.2)
+			end
+
+			local luck = game:GetService("Players").LocalPlayer.Stats.GamePasses:FindFirstChild("2x Luck")
+			if luck then
+				luck.Value = false
+			end
+		end)
+	end
+})
+
+
+
+-- Fake Damage TextBox
+Tab5:AddTextbox({
+    Name = "Fake Damage",
+    Default = "100",
+    TextDisappear = false,
+    Callback = function(Value)
+        local damageValue = tonumber(Value)
+        if not damageValue then 
+            OrionLib:MakeNotification({
+                Name = "Lỗi",
+                Content = "Vui lòng nhập số hợp lệ!",
+                Image = "rbxassetid://4483345998",
+                Time = 3
+            })
+            return 
+        end
+        
+        -- Áp dụng cho TẤT CẢ nhân vật trong workspace.Characters
+        for _, character in pairs(workspace.Characters:GetChildren()) do
+            if character:FindFirstChild("Status") and character.Status:FindFirstChild("Damage") then
+                character.Status.Damage.Value = damageValue
+            end
+        end
+        
+        OrionLib:MakeNotification({
+            Name = "Thành công",
+            Content = "Đã set Fake Damage = " .. damageValue .. " cho tất cả người chơi!",
+            Image = "rbxassetid://4483345998",
+            Time = 3
+        })
+    end    
+})
+
+-- Optional: Button để refresh (áp dụng lại giá trị hiện tại)
+Tab5:AddButton({
+    Name = "Refresh All Damage",
+    Callback = function()
+        local currentDamage = 100 -- Bạn có thể thay đổi default ở đây
+        for _, character in pairs(workspace.Characters:GetChildren()) do
+            if character:FindFirstChild("Status") and character.Status:FindFirstChild("Damage") then
+                character.Status.Damage.Value = currentDamage
+            end
+        end
+        OrionLib:MakeNotification({
+            Name = "Refresh",
+            Content = "Đã refresh Damage cho tất cả nhân vật!",
+            Time = 2
+        })
+    end
+})
+local Players = game:GetService("Players")
+
+local SelectedPlayer = nil
+local CheckAllStatus = false
+
+-- Dropdown
+local PlayerDropdown = Tab5:AddDropdown({
+    Name = "Chọn Player",
+    Default = "",
+    Options = {},
+    Callback = function(Value)
+        SelectedPlayer = Value
+    end
+})
+
+local function RefreshPlayers()
+    local List = {}
+
+    for _,plr in ipairs(Players:GetPlayers()) do
+        table.insert(List, plr.Name)
+    end
+
+    PlayerDropdown:Refresh(List, true)
+end
+
+RefreshPlayers()
+
+Players.PlayerAdded:Connect(RefreshPlayers)
+Players.PlayerRemoving:Connect(RefreshPlayers)
+
+-- Toggle
+Tab5:AddToggle({
+    Name = "Check Full Status",
+    Default = false,
+    Callback = function(Value)
+        CheckAllStatus = Value
+
+        if not Value then
+            return
+        end
+
+        if not SelectedPlayer then
+            OrionLib:MakeNotification({
+                Name = "Lỗi",
+                Content = "Chưa chọn Player!",
+                Time = 3
+            })
+            return
+        end
+
+        local Character = workspace.Characters:FindFirstChild(SelectedPlayer)
+
+        if not Character then
+            OrionLib:MakeNotification({
+                Name = "Lỗi",
+                Content = "Không tìm thấy Character!",
+                Time = 3
+            })
+            return
+        end
+
+        local Status = Character:FindFirstChild("Status")
+
+        if not Status then
+            OrionLib:MakeNotification({
+                Name = "Lỗi",
+                Content = "Không có Status!",
+                Time = 3
+            })
+            return
+        end
+
+        local Text = ""
+
+        -- Ưu tiên Crit trước
+        local CritChance = Status:FindFirstChild("CritChance")
+        local CritDamage = Status:FindFirstChild("CritDamage")
+
+        if CritChance then
+            Text = Text.."CritChance : "..tostring(CritChance.Value).."\n"
+        end
+
+        if CritDamage then
+            Text = Text.."CritDamage : "..tostring(CritDamage.Value).."\n"
+        end
+
+        -- Các chỉ số còn lại
+        for _,v in ipairs(Status:GetChildren()) do
+            if v.Name ~= "CritChance" and v.Name ~= "CritDamage" then
+                if v:IsA("NumberValue")
+                or v:IsA("IntValue")
+                or v:IsA("BoolValue")
+                or v:IsA("StringValue") then
+
+                    Text = Text..v.Name.." : "..tostring(v.Value).."\n"
+                end
+            end
+        end
+
+        OrionLib:MakeNotification({
+            Name = SelectedPlayer.." Status",
+            Content = Text,
+            Time = 10
+        })
+    end
+})
