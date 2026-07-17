@@ -43,7 +43,7 @@ local Tab6 = Window:MakeTab({
     PremiumOnly = false
 })
 local Tab7 = Window:MakeTab({
-    Name = "Server control👀",
+    Name = "Raid 70%",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
@@ -73,7 +73,7 @@ local Tab12 = Window:MakeTab({
     PremiumOnly = false
 })
 local Tab13 = Window:MakeTab({
-    Name = "farming without a farm 70%",
+    Name = "farming without a farm 60%",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
@@ -113,7 +113,7 @@ local Tab20 = Window:MakeTab({
     PremiumOnly = false
 })
 local Tab21 = Window:MakeTab({
-    Name = "Gamepass",
+    Name = "global Chat🌍",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
@@ -969,6 +969,7 @@ Tab6:AddToggle({
         end
     end
 })
+Tab6:AddLabel("Premium ⭐")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
