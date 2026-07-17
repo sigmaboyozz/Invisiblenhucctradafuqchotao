@@ -969,3 +969,42 @@ Tab6:AddToggle({
         end
     end
 })
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local RespawnAtDeath = false
+local LastDeathPosition
+
+Tab6:AddToggle({
+	Name = "Hồi sinh tại vị trí đã chết [💨]",
+	Default = false,
+	Callback = function(Value)
+		RespawnAtDeath = Value
+	end
+})
+
+local function SetupCharacter(Character)
+	local Humanoid = Character:WaitForChild("Humanoid")
+	local HRP = Character:WaitForChild("HumanoidRootPart")
+
+	Humanoid.Died:Connect(function()
+		if RespawnAtDeath then
+			LastDeathPosition = HRP.CFrame
+		end
+	end)
+end
+
+if LocalPlayer.Character then
+	SetupCharacter(LocalPlayer.Character)
+end
+
+LocalPlayer.CharacterAdded:Connect(function(Character)
+	SetupCharacter(Character)
+
+	if RespawnAtDeath and LastDeathPosition then
+		local HRP = Character:WaitForChild("HumanoidRootPart")
+
+		task.wait(0.2)
+		HRP.CFrame = LastDeathPosition
+	end
+end)
