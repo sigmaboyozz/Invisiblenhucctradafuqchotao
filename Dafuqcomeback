@@ -1039,7 +1039,7 @@ local function GetMobList()
     return List
 end
 
-local MobDropdown = Tab:AddDropdown({
+local MobDropdown = Tab3:AddDropdown({
     Name = "Choose Mobs[chọn Mobs]",
     Default = "",
     Options = GetMobList(),
