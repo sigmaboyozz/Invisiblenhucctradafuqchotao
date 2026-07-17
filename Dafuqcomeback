@@ -1,7 +1,7 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/jensonhirst/Orion/main/source"))()
 
 local Window = OrionLib:MakeWindow({
-    Name = "Dragon Blox fully functional",
+    Name = "Dragon Blox Test",
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "AutoCycleConfig"
@@ -942,5 +942,30 @@ Tab5:AddToggle({
             Content = Text,
             Time = 10
         })
+    end
+})
+local AntiIdle = false
+local AntiIdleConn
+
+Tab6:AddToggle({
+    Name = "Auto Anti Idle [Anti kick 20 Mins]",
+    Default = false,
+    Callback = function(Value)
+        AntiIdle = Value
+
+        if AntiIdleConn then
+            AntiIdleConn:Disconnect()
+            AntiIdleConn = nil
+        end
+
+        if Value then
+            local VirtualUser = game:GetService("VirtualUser")
+            local Players = game:GetService("Players")
+
+            AntiIdleConn = Players.LocalPlayer.Idled:Connect(function()
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton2(Vector2.new())
+            end)
+        end
     end
 })
