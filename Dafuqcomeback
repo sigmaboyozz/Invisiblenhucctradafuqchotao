@@ -1108,7 +1108,6 @@ Tab3:AddButton({
     end
 })
 
--- Auto Skibiid (mỗi lần chỉ tấn công 1 mob, chết mới chuyển)
 Tab3:AddToggle({
     Name = "Auto Kill Mobs",
     Default = false,
@@ -1120,12 +1119,14 @@ Tab3:AddToggle({
                     -- Lấy tất cả mob cùng tên còn sống
                     local targets = {}
                     local function addTargets(folder)
+                        if not folder then return end
                         for _, mob in ipairs(folder:GetChildren()) do
                             if mob.Name == SelectedMob then
                                 local hum = mob:FindFirstChildOfClass("Humanoid")
                                 local mobRoot = mob:FindFirstChild("HumanoidRootPart")
                                 if hum and mobRoot and hum.Health > 0 then
                                     table.insert(targets, {
+                                        Mob = mob,
                                         Humanoid = hum,
                                         Root = mobRoot
                                     })
@@ -1137,11 +1138,11 @@ Tab3:AddToggle({
                     addTargets(MobFolder)
 
                     if #targets == 0 then
-                        wait(0.5)
+                        task.wait(0.5)
                         continue
                     end
 
-                    -- Sắp xếp theo khoảng cách (gần nhất ưu tiên)
+                    -- Sắp xếp theo khoảng cách
                     local Character = LocalPlayer.Character
                     local Root = Character and Character:FindFirstChild("HumanoidRootPart")
                     if not Root then break end
@@ -1152,25 +1153,42 @@ Tab3:AddToggle({
                     -- Duyệt từng con, chỉ tấn công đến khi nó chết mới chuyển
                     for _, target in ipairs(targets) do
                         if not AutoSkibiid then break end
-                        if target.Humanoid.Health <= 0 then continue end
+
+                        -- Kiểm tra mob còn sống không (Humanoid chưa bị hủy)
+                        local hum = target.Humanoid
+                        local mobRoot = target.Root
+                        if not hum or not hum.Parent or not mobRoot or not mobRoot.Parent then
+                            continue
+                        end
+                        if hum.Health <= 0 then continue end
 
                         -- Tấn công liên tục cho đến khi mob chết hoặc tắt
-                        while AutoSkibiid and target.Humanoid.Health > 0 do
+                        while AutoSkibiid do
+                            -- Kiểm tra lại mob mỗi vòng lặp
+                            hum = target.Humanoid
+                            mobRoot = target.Root
+                            if not hum or not hum.Parent or not mobRoot or not mobRoot.Parent then break end
+                            if hum.Health <= 0 then break end
+
                             local Character = LocalPlayer.Character
                             local Root = Character and Character:FindFirstChild("HumanoidRootPart")
                             if not Root then break end
 
                             -- Tween ra sau lưng + trên đầu mob
-                            local mobRoot = target.Root
                             local targetCFrame = mobRoot.CFrame * CFrame.new(0, 5, -3)
                             local distance = (targetCFrame.Position - Root.Position).Magnitude
-                            local tweenTime = math.max(0.05, distance / 200) -- tối thiểu 0.05s
+                            local tweenTime = math.max(0.05, distance / 200)
                             local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear)
                             local tween = TweenService:Create(Root, tweenInfo, {CFrame = targetCFrame})
                             tween:Play()
                             tween.Completed:Wait()
 
-                            if not AutoSkibiid or target.Humanoid.Health <= 0 then break end
+                            if not AutoSkibiid then break end
+                            -- Kiểm tra mob lần nữa sau khi tween xong
+                            hum = target.Humanoid
+                            mobRoot = target.Root
+                            if not hum or not hum.Parent or not mobRoot or not mobRoot.Parent then break end
+                            if hum.Health <= 0 then break end
 
                             -- Gửi skill
                             local args = {
@@ -1189,17 +1207,16 @@ Tab3:AddToggle({
                                     :WaitForChild("SkillRemote")
                                     :FireServer(unpack(args))
                             end)
-                            wait(0.1)
+                            task.wait(0.1)
                         end
-                        -- Mob hiện tại đã chết hoặc tắt toggle, tiếp tục sang mob tiếp theo
+                        -- Kết thúc vòng lặp while (mob đã chết hoặc tắt toggle), tiếp tục sang mob tiếp theo
                     end
-                    wait(0.5) -- quét lại danh sách sau khi đã đánh hết một vòng
+                    task.wait(0.5) -- quét lại danh sách sau khi đã đánh hết một vòng
                 end
             end)
         end
     end
 })
-
 -- Heartbeat Lock Mobs (giữ nguyên)
 RunService.Heartbeat:Connect(function()
     if not AutoLock or not SelectedMob then return end
