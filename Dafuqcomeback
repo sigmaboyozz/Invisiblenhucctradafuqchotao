@@ -1312,3 +1312,353 @@ Tab7:AddToggle({
 		end
 	end
 })
+
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local CharacterFolder = workspace:WaitForChild("Characters")
+local LockRemote = ReplicatedStorage:WaitForChild("Packages")
+    :WaitForChild("_Index")
+    :WaitForChild("sleitnick_knit@1.4.7")
+    :WaitForChild("knit")
+    :WaitForChild("Services")
+    :WaitForChild("SkillManager")
+    :WaitForChild("RE")
+    :WaitForChild("LockedOnChanged")
+
+local SelectedPlayer = nil
+local AutoLockPlayer = false
+
+-- Lấy danh sách player
+local function GetPlayerList()
+    local t = {}
+    for _,v in ipairs(Players:GetPlayers()) do
+        if v ~= Players.LocalPlayer then
+            table.insert(t, v.Name)
+        end
+    end
+    table.sort(t)
+    return t
+end
+
+-- Dropdown chọn người chơi
+local LockDropdown = Tab2:AddDropdown({
+    Name = "Choose ⚔️",
+    Default = "",
+    Options = GetPlayerList(),
+    Callback = function(Value)
+        SelectedPlayer = Value
+    end
+})
+
+-- Cập nhật dropdown khi có người vào/ra
+Players.PlayerAdded:Connect(function()
+    LockDropdown:Refresh(GetPlayerList(), true)
+end)
+
+Players.PlayerRemoving:Connect(function()
+    LockDropdown:Refresh(GetPlayerList(), true)
+end)
+
+-- Toggle Auto Lock
+Tab2:AddToggle({
+    Name = "Auto Lock Range inf",
+    Default = false,
+    Callback = function(Value)
+        AutoLockPlayer = Value
+
+        if Value then
+            task.spawn(function()
+                while AutoLockPlayer do
+                    if SelectedPlayer then
+                        local Character = CharacterFolder:FindFirstChild(SelectedPlayer)
+                        if Character then
+                            LockRemote:FireServer(Character)
+                        end
+                    end
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+local LocalPlayer = Players.LocalPlayer
+local SkillRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("SkillRemote")
+
+local AutoKamehameha = false
+
+Tab2:AddToggle({
+    Name = "Auto Kamehameha",
+    Default = false,
+    Callback = function(Value)
+        AutoKamehameha = Value
+
+        if Value then
+            task.spawn(function()
+                while AutoKamehameha do
+                    local Character = LocalPlayer.Character
+                    local HRP = Character and Character:FindFirstChild("HumanoidRootPart")
+
+                    if HRP then
+                        local LookPos = HRP.Position + HRP.CFrame.LookVector * 200
+
+                        local args = {
+                            [1] = {
+                                ["Camera"] = workspace.CurrentCamera.CFrame,
+                                ["SkillId"] = "102",
+                                ["Began"] = true,
+                                ["CFrame"] = HRP.CFrame,
+                                ["Typе"] = 1,
+                                ["Aim"] = LookPos
+                            }
+                        }
+
+                        SkillRemote:FireServer(unpack(args))
+
+                        task.wait(0.2)
+
+                        args[1]["Began"] = false
+                        SkillRemote:FireServer(unpack(args))
+                    end
+
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local SkillRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("SkillRemote")
+
+local AutoSkill117 = false
+
+Tab2:AddToggle({
+    Name = "Skibidi toilet ",
+    Default = false,
+    Callback = function(Value)
+        AutoSkill117 = Value
+
+        if Value then
+            task.spawn(function()
+                while AutoSkill117 do
+                    local Character = LocalPlayer.Character
+                    local HRP = Character and Character:FindFirstChild("HumanoidRootPart")
+                    local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+
+                    if HRP and Humanoid then
+                        local AimPos = HRP.Position + HRP.CFrame.LookVector * 200
+
+                        local args = {
+                            [1] = {
+                                ["Camera"] = workspace.CurrentCamera.CFrame,
+                                ["SkillId"] = "117",
+                                ["Began"] = true,
+                                ["CFrame"] = HRP.CFrame,
+                                ["Typе"] = 1,
+                                ["Aim"] = AimPos
+                            }
+                        }
+
+                        -- Bật skill
+                        SkillRemote:FireServer(unpack(args))
+
+                        -- Tự đi sang phải 5 studs (không teleport)
+                        Humanoid:MoveTo(HRP.Position + HRP.CFrame.RightVector * 5)
+
+                        -- Sau 0.2s tắt skill
+                        task.wait(0.2)
+
+                        args[1].Began = false
+                        args[1].CFrame = HRP.CFrame
+                        SkillRemote:FireServer(unpack(args))
+
+                        -- Dừng di chuyển nếu vẫn đang đi
+                        Humanoid:MoveTo(HRP.Position)
+                    end
+
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local SkillRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("SkillRemote")
+
+local AutoSkill111 = false
+
+Tab2:AddToggle({
+    Name = "Auto Skill đéo biết tên ",
+    Default = false,
+    Callback = function(Value)
+        AutoSkill111 = Value
+
+        if Value then
+            task.spawn(function()
+                while AutoSkill111 do
+                    local Character = LocalPlayer.Character
+                    local HRP = Character and Character:FindFirstChild("HumanoidRootPart")
+                    local Humanoid = Character and Character:FindFirstChildOfClass("Humanoid")
+
+                    if HRP and Humanoid then
+                        local AimPos = HRP.Position + HRP.CFrame.LookVector * 200
+
+                        local args = {
+                            [1] = {
+                                ["Camera"] = workspace.CurrentCamera.CFrame,
+                                ["SkillId"] = "111",
+                                ["Began"] = true,
+                                ["CFrame"] = HRP.CFrame,
+                                ["Typе"] = 1,
+                                ["Aim"] = AimPos
+                            }
+                        }
+
+                        -- Bật skill
+                        SkillRemote:FireServer(unpack(args))
+
+                        -- Tự đi sang phải 5 studs
+                        Humanoid:MoveTo(HRP.Position + HRP.CFrame.RightVector * 5)
+
+                        task.wait(0.2)
+
+                        -- Tắt skill
+                        args[1].Began = false
+                        args[1].CFrame = HRP.CFrame
+                        SkillRemote:FireServer(unpack(args))
+
+                        Humanoid:MoveTo(HRP.Position)
+                    end
+
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+-- ==================== AUTO SKILL PIUPIU (101) ====================
+
+local AutoPiupiu = false
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+Tab2:AddToggle({
+    Name = "Skibidi Pvp",
+    Default = false,
+    Callback = function(Value)
+        AutoPiupiu = Value
+
+        if Value then
+            if not SelectedPlayer then
+                OrionLib:MakeNotification({
+                    Name = "Lỗi",
+                    Content = "Chưa chọn người để lock!",
+                    Image = "rbxassetid://4483345998",
+                    Time = 5
+                })
+                AutoPiupiu = false
+                return
+            end
+
+            task.spawn(function()
+                while AutoPiupiu and SelectedPlayer do
+                    local TargetChar = CharacterFolder:FindFirstChild(SelectedPlayer)
+                    local MyChar = LocalPlayer.Character
+                    local MyHRP = MyChar and MyChar:FindFirstChild("HumanoidRootPart")
+
+                    if TargetChar and MyHRP then
+                        local TargetHRP = TargetChar:FindFirstChild("HumanoidRootPart")
+                        if TargetHRP then
+                            -- Tween lên trên đầu 355 studs
+                            local TargetPos = TargetHRP.Position + Vector3.new(0, 355, 0)
+                            
+                            local TweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                            local Tween = TweenService:Create(MyHRP, TweenInfo, {CFrame = CFrame.new(TargetPos, TargetHRP.Position)})
+                            Tween:Play()
+                            Tween:Wait()  -- Chờ tween xong
+                        end
+                    end
+
+                    -- Spam Skill 101
+                    local args = {
+                        {
+                            Camera = workspace.CurrentCamera.CFrame,
+                            SkillId = "101",
+                            Began = true,
+                            CFrame = MyHRP and MyHRP.CFrame or CFrame.new(),
+                            ["Typе"] = 1,           -- Lưu ý: ký tự đặc biệt "е"
+                            Aim = MyHRP and (MyHRP.Position + MyHRP.CFrame.LookVector * 300) or Vector3.new()
+                        }
+                    }
+
+                    SkillRemote:FireServer(unpack(args))
+
+                    task.wait(0.15)  -- Tốc độ spam (có thể chỉnh)
+
+                    -- Tắt Began (một số skill cần)
+                    if args[1] then
+                        args[1].Began = false
+                        SkillRemote:FireServer(unpack(args))
+                    end
+
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+local AutoEnergyBlast = false
+
+Tab2:AddToggle({
+    Name = "Auto Energy Blast",
+    Default = false,
+    Callback = function(Value)
+        AutoEnergyBlast = Value
+
+        task.spawn(function()
+            while AutoEnergyBlast do
+                local args = {
+                    [1] = {
+                        ["Camera"] = CFrame.new(
+                            -543.3233032226562, 496.8465881347656, 480.50457763671875,
+                            -0.895954966545105, 0.36501678824424744, -0.25303664803504944,
+                            0, 0.5697163939476013, 0.8218414783477783,
+                            0.44414499402046204, 0.7363329529762268, -0.5104401707649231
+                        ),
+                        ["SkillId"] = "101",
+                        ["Began"] = true,
+                        ["CFrame"] = CFrame.new(
+                            -535.5504150390625, 468.61688232421875, 496.1845703125,
+                            -0.8959547877311707, 0.36501699686050415, -0.2530367076396942,
+                            1.3998713299656629e-08, 0.5697161555290222, 0.8218415379524231,
+                            0.44414523243904114, 0.7363328337669373, -0.510439932346344
+                        ),
+                        ["Typе"] = 1,
+                        ["Aim"] = Vector3.new(
+                            -522.8985595703125,
+                            427.5248107910156,
+                            521.70654296875
+                        )
+                    }
+                }
+
+                game:GetService("ReplicatedStorage")
+                    :WaitForChild("Remotes")
+                    :WaitForChild("SkillRemote")
+                    :FireServer(unpack(args))
+
+                task.wait(0.1)
+            end
+        end)
+    end
+})
