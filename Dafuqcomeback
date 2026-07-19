@@ -1550,7 +1550,6 @@ Tab2:AddToggle({
 
 local AutoPiupiu = false
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
 
 Tab2:AddToggle({
     Name = "Skibidi Pvp",
@@ -1571,52 +1570,48 @@ Tab2:AddToggle({
             end
 
             task.spawn(function()
-                while AutoPiupiu and SelectedPlayer do
-                    local TargetChar = CharacterFolder:FindFirstChild(SelectedPlayer)
+                while AutoPiupiu do
                     local MyChar = LocalPlayer.Character
                     local MyHRP = MyChar and MyChar:FindFirstChild("HumanoidRootPart")
 
-                    if TargetChar and MyHRP then
-                        local TargetHRP = TargetChar:FindFirstChild("HumanoidRootPart")
-                        if TargetHRP then
-                            -- Tween lên trên đầu 355 studs
-                            local TargetPos = TargetHRP.Position + Vector3.new(0, 355, 0)
-                            
-                            local TweenInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                            local Tween = TweenService:Create(MyHRP, TweenInfo, {CFrame = CFrame.new(TargetPos, TargetHRP.Position)})
-                            Tween:Play()
-                            Tween:Wait()  -- Chờ tween xong
-                        end
-                    end
+                    local TargetChar = CharacterFolder:FindFirstChild(SelectedPlayer)
+                    local TargetHRP = TargetChar and TargetChar:FindFirstChild("HumanoidRootPart")
 
-                    -- Spam Skill 101
-                    local args = {
-                        {
-                            Camera = workspace.CurrentCamera.CFrame,
-                            SkillId = "101",
-                            Began = true,
-                            CFrame = MyHRP and MyHRP.CFrame or CFrame.new(),
-                            ["Typе"] = 1,           -- Lưu ý: ký tự đặc biệt "е"
-                            Aim = MyHRP and (MyHRP.Position + MyHRP.CFrame.LookVector * 300) or Vector3.new()
+                    if MyHRP and TargetHRP then
+                        local Pos = TargetHRP.Position + Vector3.new(0, 250, 0)
+
+                        TweenService:Create(
+                            MyHRP,
+                            TweenInfo.new(0.1, Enum.EasingStyle.Linear),
+                            {
+                                CFrame = CFrame.new(Pos, TargetHRP.Position)
+                            }
+                        ):Play()
+
+                        local args = {
+                            {
+                                Camera = workspace.CurrentCamera.CFrame,
+                                SkillId = "101",
+                                Began = true,
+                                CFrame = MyHRP.CFrame,
+                                ["Typе"] = 1,
+                                Aim = TargetHRP.Position
+                            }
                         }
-                    }
 
-                    SkillRemote:FireServer(unpack(args))
+                        SkillRemote:FireServer(unpack(args))
 
-                    task.wait(0.15)  -- Tốc độ spam (có thể chỉnh)
-
-                    -- Tắt Began (một số skill cần)
-                    if args[1] then
                         args[1].Began = false
                         SkillRemote:FireServer(unpack(args))
                     end
 
-                    task.wait(0.1)
+                    task.wait(0.05)
                 end
             end)
         end
     end
 })
+
 local AutoEnergyBlast = false
 
 Tab2:AddToggle({
