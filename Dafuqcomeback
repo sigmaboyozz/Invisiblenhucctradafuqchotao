@@ -1964,10 +1964,11 @@ Tab7:AddToggle({
         end  
     end
 })
+
 local AutoLockBoss = false
 
 Tab7:AddToggle({
-    Name = "Auto Lock Boss",
+    Name = "Auto Lock Great droid",
     Default = false,
     Callback = function(Value)
         AutoLockBoss = Value
@@ -2023,6 +2024,7 @@ Tab7:AddToggle({
         end
     end
 })
+Tab7:AddLabel("Setting Skill")
 local RunService = game:GetService("RunService")
 
 local Toggle = false
@@ -2234,6 +2236,75 @@ Tab6:AddToggle({
 				end)
 
 				task.wait(1.5)
+			end
+		end)
+	end
+})
+Tab7:AddLabel("Setting Dungeon")
+getgenv().AutoStart = false
+
+Tab7:AddToggle({
+	Name = "Auto Start",
+	Default = false,
+	Callback = function(Value)
+		getgenv().AutoStart = Value
+
+		task.spawn(function()
+			local started = false
+			local Bosses = {
+				"Garriot",
+				"Great Droid",
+				"Atom Max"
+			}
+
+			while getgenv().AutoStart do
+				task.wait(1)
+
+				local eventMobs = workspace:FindFirstChild("World Mobs")
+					and workspace["World Mobs"]:FindFirstChild("Event Mobs")
+
+				if eventMobs then
+					for _, bossName in ipairs(Bosses) do
+						local boss = eventMobs:FindFirstChild(bossName)
+
+						if boss then
+							local humanoid = boss:FindFirstChildOfClass("Humanoid")
+
+							if humanoid then
+								if humanoid.Health > 0 then
+									started = true
+								end
+
+								if started and humanoid.Health <= 0 then
+									started = false
+
+									game:GetService("StarterGui"):SetCore("SendNotification", {
+										Title = "Auto Start",
+										Text = bossName .. " đã chết, 25s start tiếp...",
+										Duration = 5
+									})
+
+									task.wait(25)
+
+									if getgenv().AutoStart then
+										game:GetService("ReplicatedStorage")
+											:WaitForChild("Packages")
+											:WaitForChild("_Index")
+											:WaitForChild("sleitnick_knit@1.4.7")
+											:WaitForChild("knit")
+											:WaitForChild("Services")
+											:WaitForChild("DungeonLobbyService")
+											:WaitForChild("RF")
+											:WaitForChild("StartDungeon")
+											:InvokeServer()
+									end
+
+									break
+								end
+							end
+						end
+					end
+				end
 			end
 		end)
 	end
