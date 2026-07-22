@@ -1657,3 +1657,184 @@ Tab2:AddToggle({
         end)
     end
 })
+local Macros = {}  
+local CurrentRecording = nil
+local IsRecording = false
+local IsPlaying = false
+local SelectedMacro = nil
+local LoopEnabled = true
+
+local dropdown = Tab9:AddDropdown({
+	Name = "Choose Macro",
+	Default = "Chưa có macro nào",
+	Options = {},
+	Callback = function(Value)
+		SelectedMacro = Value
+	end    
+})
+
+-- Toggle Loop
+Tab9:AddToggle({
+	Name = "🔁 Loop Macro",
+	Default = true,
+	Callback = function(Value)
+		LoopEnabled = Value
+	end    
+})
+
+Tab9:AddButton({
+	Name = "🎥 Rec Macro",
+	Callback = function()
+		if IsRecording then
+			OrionLib:MakeNotification({Name = "Lỗi", Content = "Đang ghi rồi!", Time = 3})
+			return
+		end
+		CurrentRecording = {}
+		IsRecording = true
+		OrionLib:MakeNotification({Name = "Recording", Content = "Bắt đầu ghi macro...", Time = 5})
+	end    
+})
+
+Tab9:AddButton({
+	Name = "⏹️ Stop & Save Macro",
+	Callback = function()
+		if not IsRecording then return end
+		IsRecording = false
+		
+		local macroName = "Macro " .. (#Macros + 1)
+		Macros[macroName] = {actions = CurrentRecording}
+		
+		RefreshDropdown()
+		
+		OrionLib:MakeNotification({Name = "Saved", Content = "Đã lưu " .. macroName, Time = 4})
+		CurrentRecording = nil
+	end    
+})
+
+Tab9:AddToggle({
+	Name = "▶️ Play / Stop Macro",
+	Callback = function()
+		if not SelectedMacro or not Macros[SelectedMacro] then
+			OrionLib:MakeNotification({Name = "Lỗi", Content = "Chưa chọn macro!", Time = 3})
+			return
+		end
+		
+		if IsPlaying then
+			IsPlaying = false
+			OrionLib:MakeNotification({Name = "Stopped", Content = "Đã dừng macro", Time = 3})
+			return
+		end
+		
+		IsPlaying = true
+		OrionLib:MakeNotification({Name = "Playing", Content = "Đang phát " .. SelectedMacro, Time = 3})
+		
+		spawn(function()
+			repeat
+				local actions = Macros[SelectedMacro].actions
+				local i = 1
+				
+				while IsPlaying and i <= #actions do
+					local action = actions[i]
+					
+					if action.Type == "Remote" and action.Remote then
+						pcall(function()
+							action.Remote:FireServer(unpack(action.Args))
+						end)
+					elseif action.Type == "Move" and action.CFrame then
+						local char = game.Players.LocalPlayer.Character
+						local root = char and char:FindFirstChild("HumanoidRootPart")
+						if root then
+							root.CFrame = action.CFrame
+						end
+					end
+					
+					i += 1
+					task.wait(0.035)
+				end
+				
+				if LoopEnabled and IsPlaying then
+					task.wait(0.1)
+				else
+					break
+				end
+			until not IsPlaying or not LoopEnabled
+			
+			IsPlaying = false
+		end)
+	end    
+})
+
+-- Nút Clear All
+Tab9:AddButton({
+	Name = "🗑️ Clear All Macros",
+	Callback = function()
+		Macros = {}
+		SelectedMacro = nil
+		RefreshDropdown()
+		OrionLib:MakeNotification({Name = "Cleared", Content = "Đã xóa hết tất cả macro", Time = 5})
+	end    
+})
+
+-- Hàm refresh dropdown
+function RefreshDropdown()
+	local options = {}
+	for name, _ in pairs(Macros) do
+		table.insert(options, name)
+	end
+	if #options == 0 then
+		options = {"Chưa có macro nào"}
+	end
+	dropdown:Refresh(options, true)
+end
+
+-- ====================== GHI MACRO ======================
+local function RecordAction(actionData)
+	if IsRecording and CurrentRecording then
+		table.insert(CurrentRecording, actionData)
+	end
+end
+
+-- Hook Remote
+local mt = getrawmetatable(game)
+local oldNamecall = mt.__namecall
+setreadonly(mt, false)
+
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    if IsRecording and method == "FireServer" then
+        local class = self.ClassName
+        if class == "RemoteEvent" or class == "RemoteFunction" then
+            RecordAction({
+                Type = "Remote",
+                Remote = self,
+                Args = {...},
+            })
+        end
+    end
+    return oldNamecall(self, ...)
+end)
+
+setreadonly(mt, true)
+
+-- Ghi di chuyển
+local lastRecordTime = 0
+game:GetService("RunService").Heartbeat:Connect(function()
+    if not IsRecording then return end
+    local char = game.Players.LocalPlayer.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+    
+    local now = tick()
+    if now - lastRecordTime >= 0.04 then
+        RecordAction({
+            Type = "Move",
+            CFrame = root.CFrame
+        })
+        lastRecordTime = now
+    end
+end)
+
+-- Load macro cũ khi vào game
+RefreshDropdown()
+
+OrionLib:Init()
