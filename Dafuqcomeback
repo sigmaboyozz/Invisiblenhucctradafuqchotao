@@ -2166,3 +2166,75 @@ Tab7:AddToggle({
 		end)
 	end
 })
+local AutoPhePha = True
+
+Tab6:AddToggle({
+	Name = "Auto Phê Pha V2",
+	Default = True,
+	Callback = function(Value)
+		AutoPhePha = Value
+
+		task.spawn(function()
+			while AutoPhePha do
+				pcall(function()
+					local player = game.Players.LocalPlayer
+					local charFolder = workspace:FindFirstChild("Characters")
+
+					if charFolder then
+						local char = charFolder:FindFirstChild(player.Name)
+
+						if char and not char:FindFirstChild("Mode") then
+							local args = {
+								{
+									Camera = CFrame.new(
+										-28.790475845336914,
+										298.4656677246094,
+										-91.82173156738281,
+										0.8630251884460449,
+										0.06684061139822006,
+										-0.5007192492485046,
+										0,
+										0.9912075996398926,
+										0.1323155164718628,
+										0.5051608085632324,
+										-0.11419162154197693,
+										0.855437159538269
+									),
+									SkillId = "10",
+									Began = true,
+									CFrame = CFrame.new(
+										-20.313318252563477,
+										294.6113586425781,
+										-106.30424499511719,
+										0.863025426864624,
+										0.06684055924415588,
+										-0.5007189512252808,
+										-8.083265612413015e-09,
+										0.9912076592445374,
+										0.1323154717683792,
+										0.5051605105400085,
+										-0.11419161409139633,
+										0.8554373979568481
+									),
+									["Typ\208\181"] = 1,
+									Aim = vector.create(
+										4.722629547119141,
+										287.9955749511719,
+										-149.07611083984375
+									)
+								}
+							}
+
+							game:GetService("ReplicatedStorage")
+								:WaitForChild("Remotes")
+								:WaitForChild("SkillRemote")
+								:FireServer(unpack(args))
+						end
+					end
+				end)
+
+				task.wait(1.5)
+			end
+		end)
+	end
+})
