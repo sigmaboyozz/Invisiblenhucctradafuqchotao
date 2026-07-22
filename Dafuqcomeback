@@ -2023,3 +2023,38 @@ Tab7:AddToggle({
         end
     end
 })
+local RunService = game:GetService("RunService")
+
+local Toggle = false
+
+Tab7:AddToggle({
+    Name = "Auto Next Area",
+    Default = false,
+    Callback = function(Value)
+        Toggle = Value
+
+        if Value then
+            task.spawn(function()
+                while Toggle do
+                    local stage = workspace:FindFirstChild("Dungeon")
+                    if stage then
+                        stage = stage:FindFirstChild("Stages")
+                        if stage then
+                            stage = stage:FindFirstChild("0")
+                            if stage then
+                                local nextArea = stage:FindFirstChild("NextArea")
+                                if nextArea and nextArea:FindFirstChild("Container") then
+                                    local re = nextArea:FindFirstChild("DungeonNextAreaPad")
+                                    if re and re:FindFirstChild("RE") and re.RE:FindFirstChild("Interact") then
+                                        re.RE.Interact:FireServer(true)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
