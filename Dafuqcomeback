@@ -1838,3 +1838,188 @@ end)
 RefreshDropdown()
 
 OrionLib:Init()
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local hrp = character:WaitForChild("HumanoidRootPart")
+
+-- Cập nhật character khi respawn
+player.CharacterAdded:Connect(function(newChar)
+    character = newChar
+    hrp = newChar:WaitForChild("HumanoidRootPart")
+end)
+
+local AutoGodmode = false
+local mainConnection
+
+local HEIGHT_ABOVE = 8.8
+
+-- ==================== SLIDER ĐỘ CAO ====================
+Tab:AddSlider({
+    Name = "Độ cao trên Boss",
+    Min = 0,
+    Max = 20,
+    Default = 8.8,
+    Increment = 0.1,
+    ValueName = "Studs",
+    Callback = function(Value)
+        HEIGHT_ABOVE = Value
+    end
+})
+
+Tab7:AddToggle({
+    Name = "Great Đroid",
+    Default = false,
+    Callback = function(Value)
+        AutoGodmode = Value
+
+        if Value then  
+            mainConnection = RunService.Heartbeat:Connect(function()  
+                if not AutoGodmode then return end  
+                if not hrp or not hrp.Parent then return end  
+                  
+                local worldMobs = workspace:FindFirstChild("World Mobs")
+                if not worldMobs then return end
+                
+                local eventMobs = worldMobs:FindFirstChild("Event Mobs")
+                if not eventMobs then return end
+                
+                -- ==================== ƯU TIÊN CUSTOMMOB ====================
+                local targetMob = nil
+                
+                local customMob = eventMobs:FindFirstChild("CustomMob")
+                if customMob then
+                    local hum = customMob:FindFirstChild("Humanoid")
+                    local root = customMob:FindFirstChild("HumanoidRootPart")
+                    if root and hum and hum.Health > 0 then
+                        targetMob = customMob
+                    end
+                end
+                
+                -- Nếu không có CustomMob thì tìm boss gần nhất
+                if not targetMob then
+                    local closestDist = math.huge
+                    for _, mob in ipairs(eventMobs:GetChildren()) do  
+                        local humanoid = mob:FindFirstChild("Humanoid")  
+                        local root = mob:FindFirstChild("HumanoidRootPart")  
+                        if root and humanoid and humanoid.Health > 0 then  
+                            local dist = (hrp.Position - root.Position).Magnitude  
+                            if dist < closestDist then  
+                                closestDist = dist  
+                                targetMob = mob  
+                            end  
+                        end  
+                    end
+                end
+                
+                if not targetMob or not targetMob:FindFirstChild("HumanoidRootPart") then  
+                    return  
+                end  
+                  
+                local bossHRP = targetMob.HumanoidRootPart  
+                local targetPos = bossHRP.Position + Vector3.new(0, HEIGHT_ABOVE, 0)  
+                  
+                -- Fix rơi + giật mạnh  
+                hrp.Velocity = Vector3.new(0, 0, 0)  
+                hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)  
+                hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)  
+                  
+                -- Tween mượt  
+                local tweenInfo = TweenInfo.new(0.22, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)  
+                local tween = TweenService:Create(hrp, tweenInfo, {  
+                    CFrame = CFrame.new(targetPos, bossHRP.Position)  
+                })  
+                tween:Play()  
+                  
+                -- Auto Skill chỉ khi gần  
+                local distToBoss = (hrp.Position - bossHRP.Position).Magnitude
+                if distToBoss <= 30 then  
+                    local args = {  
+                        "Weapons_20_3",  
+                        {  
+                            TargetPos = Vector3.new(-409.91522216796875, 1356.2965087890625, 95.83793640136719)  
+                        },  
+                        18  
+                    }  
+                    pcall(function()  
+                        game:GetService("ReplicatedStorage")  
+                            :WaitForChild("Packages")  
+                            :WaitForChild("_Index")  
+                            :WaitForChild("sleitnick_knit@1.4.7")  
+                            :WaitForChild("knit")  
+                            :WaitForChild("Services")  
+                            :WaitForChild("SkillManagerV2")  
+                            :WaitForChild("RE")  
+                            :WaitForChild("ExecuteSkill"):FireServer(unpack(args))  
+                    end)  
+                end  
+            end)  
+        else  
+            if mainConnection then  
+                mainConnection:Disconnect()  
+                mainConnection = nil  
+            end  
+        end  
+    end
+})
+local AutoLockBoss = false
+
+Tab7:AddToggle({
+    Name = "Auto Lock Boss",
+    Default = false,
+    Callback = function(Value)
+        AutoLockBoss = Value
+
+        if AutoLockBoss then
+            task.spawn(function()
+                local EventMobs = workspace:WaitForChild("World Mobs"):WaitForChild("Event Mobs")
+
+                local Remote = game:GetService("ReplicatedStorage")
+                    :WaitForChild("Packages")
+                    :WaitForChild("_Index")
+                    :WaitForChild("sleitnick_knit@1.4.7")
+                    :WaitForChild("knit")
+                    :WaitForChild("Services")
+                    :WaitForChild("SkillManager")
+                    :WaitForChild("RE")
+                    :WaitForChild("LockedOnChanged")
+
+                while AutoLockBoss do
+                    local target
+
+                    -- Ưu tiên CustomMob
+                    for _, mob in ipairs(EventMobs:GetChildren()) do
+                        if mob.Name == "CustomMob" then
+                            local hum = mob:FindFirstChildWhichIsA("Humanoid")
+                            if hum and hum.Health > 0 then
+                                target = mob
+                                break
+                            end
+                        end
+                    end
+
+                    -- Không còn CustomMob thì lock Great Droid
+                    if not target then
+                        local gd = EventMobs:FindFirstChild("Great Droid")
+                        if gd then
+                            local hum = gd:FindFirstChildWhichIsA("Humanoid")
+                            if hum and hum.Health > 0 then
+                                target = gd
+                            end
+                        end
+                    end
+
+                    if target then
+                        pcall(function()
+                            Remote:FireServer(target)
+                        end)
+                    end
+
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
