@@ -2309,3 +2309,91 @@ Tab7:AddToggle({
 		end)
 	end
 })
+local AutoFarm = false
+
+Tab3:AddToggle({
+    Name = "Auto farm Main",
+    Default = false,
+    Callback = function(Value)
+        AutoFarm = Value
+
+        if Value then
+            -- Skill Spam
+            task.spawn(function()
+                while AutoFarm do
+                    task.wait()
+
+                    local args = {{
+                        Camera = CFrame.new(74.27,251,-28.74,-0.951,-0.044,0.305,0,0.989,0.142,-0.308,0.135,-0.941),
+                        SkillId = "1",
+                        Began = true,
+                        CFrame = CFrame.new(70.45,247.81,-16.98),
+                        ["Typе"] = 1,
+                        Aim = Vector3.new(70.45,247.81,-66.98)
+                    }}
+
+                    RS.Remotes.SkillRemote:FireServer(unpack(args))
+                end
+            end)
+
+            -- Teleporter
+            task.spawn(function()
+                local remote = workspace["World Map"]["New Lobby"]
+                    .Teleporters
+                    .CrimsonPlanet_TPPad
+                    .WorldTeleporterPad
+                    .RE
+                    .ActivateWorldTeleporter
+
+                while AutoFarm do
+                    task.wait()
+
+                    if Rebirth.Value >= 50 and Rebirth.Value < 60 then
+                        remote:FireServer()
+                    end
+                end
+            end)
+
+            -- Auto Farm
+            task.spawn(function()
+                while AutoFarm do
+                    task.wait(0.2)
+
+                    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+
+                    if hrp then
+                        if Strength.Value >= 100000 then
+                            local mob = FindBrawly()
+
+                            if mob then
+                                local root = mob:FindFirstChild("HumanoidRootPart") or mob.PrimaryPart
+                                if root then
+                                    TweenTo(root.CFrame)
+                                end
+                            else
+                                TweenTo(WAIT_POS)
+                            end
+                        else
+                            local mob = FindBandit()
+
+                            if mob then
+                                local root = mob:FindFirstChild("HumanoidRootPart") or mob.PrimaryPart
+                                if root then
+                                    TweenTo(root.CFrame)
+                                end
+                            end
+                        end
+                    end
+                end
+
+                if currentTween then
+                    currentTween:Cancel()
+                end
+            end)
+        else
+            if currentTween then
+                currentTween:Cancel()
+            end
+        end
+    end
+})
