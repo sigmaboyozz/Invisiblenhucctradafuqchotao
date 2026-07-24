@@ -2309,34 +2309,8 @@ Tab7:AddToggle({
 		end)
 	end
 })
-                                end
-                            else
-                                TweenTo(WAIT_POS)
-                            end
-                        else
-                            local mob = FindBandit()
+                                
 
-                            if mob then
-                                local root = mob:FindFirstChild("HumanoidRootPart") or mob.PrimaryPart
-                                if root then
-                                    TweenTo(root.CFrame)
-                                end
-                            end
-                        end
-                    end
-                end
-
-                if currentTween then
-                    currentTween:Cancel()
-                end
-            end)
-        else
-            if currentTween then
-                currentTween:Cancel()
-            end
-        end
-    end
-})
 getgenv().AutoSkibidi = false
 
 Tab3:AddToggle({
