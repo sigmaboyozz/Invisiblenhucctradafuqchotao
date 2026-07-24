@@ -2309,66 +2309,6 @@ Tab7:AddToggle({
 		end)
 	end
 })
-local AutoFarm = false
-
-Tab3:AddToggle({
-    Name = "Auto farm Main",
-    Default = false,
-    Callback = function(Value)
-        AutoFarm = Value
-
-        if Value then
-            -- Skill Spam
-            task.spawn(function()
-                while AutoFarm do
-                    task.wait()
-
-                    local args = {{
-                        Camera = CFrame.new(74.27,251,-28.74,-0.951,-0.044,0.305,0,0.989,0.142,-0.308,0.135,-0.941),
-                        SkillId = "1",
-                        Began = true,
-                        CFrame = CFrame.new(70.45,247.81,-16.98),
-                        ["Typе"] = 1,
-                        Aim = Vector3.new(70.45,247.81,-66.98)
-                    }}
-
-                    RS.Remotes.SkillRemote:FireServer(unpack(args))
-                end
-            end)
-
-            -- Teleporter
-            task.spawn(function()
-                local remote = workspace["World Map"]["New Lobby"]
-                    .Teleporters
-                    .CrimsonPlanet_TPPad
-                    .WorldTeleporterPad
-                    .RE
-                    .ActivateWorldTeleporter
-
-                while AutoFarm do
-                    task.wait()
-
-                    if Rebirth.Value >= 50 and Rebirth.Value < 60 then
-                        remote:FireServer()
-                    end
-                end
-            end)
-
-            -- Auto Farm
-            task.spawn(function()
-                while AutoFarm do
-                    task.wait(0.2)
-
-                    local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
-
-                    if hrp then
-                        if Strength.Value >= 100000 then
-                            local mob = FindBrawly()
-
-                            if mob then
-                                local root = mob:FindFirstChild("HumanoidRootPart") or mob.PrimaryPart
-                                if root then
-                                    TweenTo(root.CFrame)
                                 end
                             else
                                 TweenTo(WAIT_POS)
@@ -2396,4 +2336,148 @@ Tab3:AddToggle({
             end
         end
     end
+})
+getgenv().AutoSkibidi = false
+
+Tab3:AddToggle({
+	Name = "Auto Farm Mainworld",
+	Default = false,
+	Callback = function(Value)
+		getgenv().AutoSkibidi = Value
+
+		if not Value then
+			if currentTween then
+				currentTween:Cancel()
+			end
+			return
+		end
+
+		task.spawn(function()
+			local Players = game:GetService("Players")
+			local TweenService = game:GetService("TweenService")
+			local RS = game:GetService("ReplicatedStorage")
+			local LP = Players.LocalPlayer
+
+			local Strength = LP.Stats.Strength
+			local Rebirth = LP.Stats.Rebirth
+			local MobFolder = workspace["World Mobs"].Mobs
+
+			local WAIT_POS = CFrame.new(
+				6489.69238,
+				602.375183,
+				-2983.48608
+			)
+
+			local SPEED = 200
+			local currentTween
+
+			local function TweenTo(cf)
+				if currentTween then
+					currentTween:Cancel()
+				end
+
+				local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+				if not hrp then return end
+
+				local dist = (hrp.Position - cf.Position).Magnitude
+
+				currentTween = TweenService:Create(
+					hrp,
+					TweenInfo.new(dist / SPEED, Enum.EasingStyle.Linear),
+					{CFrame = cf}
+				)
+
+				currentTween:Play()
+			end
+
+			local function Alive(model)
+				local hum = model:FindFirstChildOfClass("Humanoid")
+				return hum and hum.Health > 0
+			end
+
+			local function FindBandit()
+				for _,v in ipairs(MobFolder:GetChildren()) do
+					if v.Name == "Bandit" and Alive(v) then
+						return v
+					end
+				end
+			end
+
+			local function FindBrawly()
+				for _,v in ipairs(MobFolder:GetChildren()) do
+					if string.find(string.lower(v.Name),"braw") and Alive(v) then
+						return v
+					end
+				end
+			end
+
+			task.spawn(function()
+				while getgenv().AutoSkibidi do
+					task.wait()
+
+					local args = {{
+						Camera = CFrame.new(74.2727279663086,251.0009002685547,-28.747745513916016,-0.9511321783065796,-0.044049736112356186,0.3056260347366333,0,0.9897724390029907,0.14265543222427368,-0.308784157037735,0.13568417727947235,-0.9414043426513672),
+						SkillId = "1",
+						Began = true,
+						CFrame = CFrame.new(70.45240020751953,247.81771850585938,-16.98019027709961),
+						["Typе"] = 1,
+						Aim = Vector3.new(70.45240020751953,247.81771850585938,-66.98019409179688)
+					}}
+
+					RS.Remotes.SkillRemote:FireServer(unpack(args))
+				end
+			end)
+
+			task.spawn(function()
+				local remote = workspace["World Map"]["New Lobby"]
+					.Teleporters
+					.CrimsonPlanet_TPPad
+					.WorldTeleporterPad
+					.RE
+					.ActivateWorldTeleporter
+
+				while getgenv().AutoSkibidi do
+					task.wait()
+
+					if Rebirth.Value >= 50 and Rebirth.Value < 60 then
+						remote:FireServer()
+					end
+				end
+			end)
+
+			while getgenv().AutoSkibidi do
+				task.wait(0.2)
+
+				local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+
+				if hrp then
+					if Strength.Value >= 100000 then
+						local mob = FindBrawly()
+
+						if mob then
+							local root = mob:FindFirstChild("HumanoidRootPart") or mob.PrimaryPart
+							if root then
+								TweenTo(root.CFrame)
+							end
+						else
+							TweenTo(WAIT_POS)
+						end
+					else
+						local mob = FindBandit()
+
+						if mob then
+							local root = mob:FindFirstChild("HumanoidRootPart") or mob.PrimaryPart
+							if root then
+								TweenTo(root.CFrame)
+							end
+						end
+					end
+				end
+			end
+
+			if currentTween then
+				currentTween:Cancel()
+			end
+		end)
+	end
 })
